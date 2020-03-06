@@ -1,5 +1,5 @@
-./.vscode
-./src
-./test
+.vscode
+src
+test
 rollup.config.js
 tsconfig.json
