@@ -1,8 +1,10 @@
 # ODO JS SDK
 
+Welcome to the ODO JS SDK. This library is meant for interacting with the ODO app via our JavaScript/App bridge and helps with communication with ODO, recording analytics and saving/retieving data.
+
 ## Installation
 
-You should never load odo over the wire. Instead either install it via npm or download and store the JS as a vendor file locally.
+There are 2 ways to install ODO. 
 
 **via NPM/Yarn**
 
@@ -14,7 +16,9 @@ yarn add @odogames/js-sdk
 
 **Or Download It (save this JS file)**
 
-https://unpkg.com/@odogames/js-sdk@1.0.0/dist/odo.js
+Use the following link to **download** the ODO JS SDK. Do not hot link to it. We like to make our games **fully operational without the internet**. This allows people to play games on the go more easily.
+
+Download: https://unpkg.com/@odogames/js-sdk@1.0.0/dist/odo.js
 
 ## Initialization/Usage
 
@@ -39,46 +43,55 @@ When downloading you should add the script file locally, maybe place it in a ven
 
 ## APIs
 
-### Functions
+### Events
+
+The following functions are available when listening to events.
 
 ```
-  // Event Handling (events will only come from ODO)
   odo.events.on(event: ODO.Events, callback: (data?: object) => void): void
   odo.events.off(event: ODO.Events, callback: (data?: object) => void): void
   odo.events.once(event: ODO.Events, callback: (data?: object) => void): void
-  // and anything else available on the nodejs EventEmitter class
+```
 
-  // Triggers will be sent to ODO
+#### Event Types
+
+**ODO.Events.start**: (Required) Is executed when the player wants to start a game. The `start` event is required to be listened to.
+
+**ODO.Events.restart**: For replayable games, after the "finish" trigger is executed, the player may "restart" the game. This action would initiate a restart event. Optionally, games can implement their own "restart" behavior. This is provided as a convenience.
+
+### Triggers
+
+A trigger is used to signal to ODO that the game is prepared for further player interaction. For instance, the game should fire an `ODO.Triggers.ready` trigger when all assets are loaded.
+
+```
   odo.trigger(event: ODO.Triggers, data?: object): void
+```
 
-  // Analytics
-  odo.track(event: string, data?: object): void
+#### Trigger Types
 
-  // Data
+**ODO.Triggers.ready**: (Required) Indicate to ODO that the game is loaded and ready to be played.
+**ODO.Triggers.finish**: For replayable games, you can indicate to ODO that a playthrough is complete. This will cause ODO to a show a UI that asks the player if they'd like to replay. This is provided as a convenience.
+
+**NOTE** In dev environments, triggers will automatically fire their "event" counterparts.
+
+### Data Saving/Retrieval
+
+Use the following methods to save/retrieve data. getForPlayer/saveForPlayer are used to store data for just this player, while get/save is for non-player specific information.
+
+```
   odo.data.get(key: string, (data: object) => void): Promise<object>
   odo.data.save(key: string, (data: object) => void): Promise<object>
   odo.data.getForPlayer(key: string, (data: object) => void): Promise<object>
   odo.data.saveForPlayer(key: string, (data: object) => void): Promise<object>
 ```
 
-### Events
+### Analytics
 
-We have 2 events currently. An event is the way ODO signals to the game that something should occur.
+You may track certain player activities like "checkpoints" reached in order to get insights into how people playing your game are doing.
 
-**IMPORTANT** the `start` event is required to be listened to.
-
-- ODO.Events.start: Is executed when the player wants to start a game.
-- ODO.Events.restart: For replayable games, after the "finish" trigger is executed, the player may "restart" the game. This action would initiate a restart event. Optionally, games can implement their own "restart" behavior. This is provided as a convenience.
-
-### Triggers
-
-We have 2 triggers currently. A trigger is used for the game to signal to ODO that it is ready to do something, such as when the game is fully loaded for instance, and you'd like to indicate that to ODO.
-
-**IMPORTANT** The `ready` event is required to be triggered.
-**IMPORTANT** In dev environments, triggers will automatically fire their "event" counter parts.
-
-- ODO.Triggers.ready: Indicate to ODO that the game is loaded and ready to be played.
-- ODO.Triggers.finish: For replayable games, you can indicate to ODO that a play through of a game is complete. This will cause ODO to a show a UI to the player that asks them if they'd like to replay. This is provided as a convenience.
+```
+  odo.track(event: string, data?: object): void
+```
 
 ### ODO Production vs Testing/Dev
 
