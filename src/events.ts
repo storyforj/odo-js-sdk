@@ -1,22 +1,33 @@
-import { Global } from "./types";
+import { EventEmitter } from 'events';
 
-export enum Events {
-  start = 'odo:event:start',
-  restart = 'odo:event:restart',
+import { ODOStorage } from './types';
+
+export const Events = {
+  start: 'odo:event:start',
+  restart: 'odo:event:restart',
 };
 
-export const on = (global: Global) => (event: Events, callback: (data?: object) => void) => {
-  global.document.addEventListener(event.toString(), callback);
-};
+export class ODOEmitter extends EventEmitter {
+  private storage: ODOStorage;
 
-export const off = (global: Global) => (event: Events, callback: (data?: object) => void) => {
-  global.document.removeEventListener(event.toString(), callback);
-};
+  constructor(storage: ODOStorage) {
+    super();
+    this.storage = storage;
+  }
 
-export const once = (global: Global) => (event: Events, callback: (data?: object) => void) => {
-  const onceCallback = (data?: object): void => {
-    callback(data);
-    off(global)(event, onceCallback);
-  };
-  on(global)(event, onceCallback);
+  on(event: string | symbol, listener: (...args: any[]) => void): this {
+    EventEmitter.prototype.on.call(this, event.toString(), listener);
+    if (event === Events.start && this.storage.isStarted) {
+      listener();
+    }
+    return this;
+  }
+
+  emit(event: string | symbol, ...args: any[]): boolean {
+    const result = EventEmitter.prototype.emit.call(this, event.toString(), ...args);
+    if (event === Events.start) {
+      this.storage.isStarted = true;
+    }
+    return result;
+  }
 };

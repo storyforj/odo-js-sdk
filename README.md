@@ -43,9 +43,10 @@ When downloading you should add the script file locally, maybe place it in a ven
 
 ```
   // Event Handling (events will only come from ODO)
-  odo.on(event: ODO.Events, callback: (data?: object) => void): void
-  odo.off(event: ODO.Events, callback: (data?: object) => void): void
-  odo.once(event: ODO.Events, callback: (data?: object) => void): void
+  odo.events.on(event: ODO.Events, callback: (data?: object) => void): void
+  odo.events.off(event: ODO.Events, callback: (data?: object) => void): void
+  odo.events.once(event: ODO.Events, callback: (data?: object) => void): void
+  // and anything else available on the nodejs EventEmitter class
 
   // Triggers will be sent to ODO
   odo.trigger(event: ODO.Triggers, data?: object): void
@@ -54,10 +55,10 @@ When downloading you should add the script file locally, maybe place it in a ven
   odo.track(event: string, data?: object): void
 
   // Data
-  odo.getData(key: string, (data: object) => void): Promise<object>
-  odo.saveData(key: string, (data: object) => void): Promise<object>
-  odo.getPlayerData(key: string, (data: object) => void): Promise<object>
-  odo.savePlayerData(key: string, (data: object) => void): Promise<object>
+  odo.data.get(key: string, (data: object) => void): Promise<object>
+  odo.data.save(key: string, (data: object) => void): Promise<object>
+  odo.data.getPlayer(key: string, (data: object) => void): Promise<object>
+  odo.data.savePlayer(key: string, (data: object) => void): Promise<object>
 ```
 
 ### Events

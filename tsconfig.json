@@ -10,7 +10,8 @@
     "declaration": true,
     "declarationMap": true,
     "allowSyntheticDefaultImports": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
   },
   "formatCodeOptions": {
     "indentSize": 2,

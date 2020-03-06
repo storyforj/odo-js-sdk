@@ -11,12 +11,12 @@ describe('odo', () => {
     const odo = ODO.init();
     const callback = chai.spy(() => {});
 
-    odo.on(ODO.Events.start, callback);
-    odo.__triggerForTesting(ODO.Events.start);
+    odo.events.on(ODO.Events.start, callback);
+    odo.events.emit(ODO.Events.start);
     expect(callback).to.have.been.called.exactly(1);
 
-    odo.off(ODO.Events.start, callback);
-    odo.__triggerForTesting(ODO.Events.start);
+    odo.events.off(ODO.Events.start, callback);
+    odo.events.emit(ODO.Events.start);
     expect(callback).to.have.been.called.exactly(1);
   });
 
@@ -24,9 +24,18 @@ describe('odo', () => {
     const odo = ODO.init();
     const callback = chai.spy(() => {});
 
-    odo.once(ODO.Events.start, callback);
-    odo.__triggerForTesting(ODO.Events.start);
-    odo.__triggerForTesting(ODO.Events.start);
+    odo.events.once(ODO.Events.start, callback);
+    odo.events.emit(ODO.Events.start);
+    odo.events.emit(ODO.Events.start);
+    expect(callback).to.have.been.called.exactly(1);
+  });
+
+  it('the start event fires even if the listener is added out of sequence', async function() {
+    const odo = ODO.init();
+    const callback = chai.spy(() => {});
+
+    odo.events.emit(ODO.Events.start);
+    odo.events.on(ODO.Events.start, callback);
     expect(callback).to.have.been.called.exactly(1);
   });
 });
