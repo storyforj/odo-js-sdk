@@ -23,7 +23,7 @@ When using npm you should import ODO as follows:
 ```
 import ODO from '@odogames/js-sdk';
 
-const odo = ODO.init();
+const odo = ODO.init({ useLocalStorageInDev: true });
 odo.on(ODO.Events.start, () => {});
 ```
 
@@ -32,7 +32,7 @@ When downloading you should add the script file locally, maybe place it in a ven
 ```
 <script src="vendor/odo.js">
 <script>
-  const odo = ODO.init();
+  const odo = ODO.init({ useLocalStorageInDev: true });
   odo.on(ODO.Events.start, () => {});
 </script>
 ```
@@ -83,6 +83,18 @@ We have 2 triggers currently. A trigger is used for the game to signal to ODO th
 ### ODO Production vs Testing/Dev
 
 The ODO JS SDK is designed to work within both the ODO app and in local development. When using the app, we save data via ODOs APIs. In local environments (or out on the web elsewhere), we use local storage as the persistence layer. This persistence is volatile, but allows developers to have an easy testing/development experience.
+
+
+### Testing/Configuration
+
+`ODO.init(config?: object)` takes some optional params that are mostly useful in testing scenarios.
+
+```
+config = {
+  global?: Global, // A simulated global object as defined from our "Global" type. Great for unit testing.
+  useLocalStorageInDev: boolean, // Provides a useful simulation of persistance using localStorage
+}
+```
 
 ### Getting Help
 
