@@ -4,7 +4,7 @@ Welcome to the ODO JS SDK. This library is meant for interacting with the ODO ap
 
 ## Installation
 
-There are 2 ways to install ODO. 
+There are 2 ways to install ODO.
 
 **via NPM/Yarn**
 
@@ -18,7 +18,7 @@ yarn add @odogames/js-sdk
 
 Use the following link to **download** the ODO JS SDK. Do not hot link to it. We like to make our games **fully operational without the internet**. This allows people to play games on the go more easily.
 
-Download: https://unpkg.com/@odogames/js-sdk@1.0.0/dist/odo.js
+Download: https://www.unpkg.com/@odogames/js-sdk@1.0.0/build/odo.js
 
 ## Initialization/Usage
 
