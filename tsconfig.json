@@ -2,16 +2,13 @@
   "compilerOptions": {
     "lib": ["es5", "es6", "dom"],
     "target": "es5",
-    "jsx": "react",
-    "jsxFactory": "h",
     "strict": true,
     "noImplicitAny": false,
     "noUnusedLocals": true,
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "allowSyntheticDefaultImports": true,
-    "noUnusedParameters": true,
-    "resolveJsonModule": true,
+    "noUnusedParameters": true
   },
   "formatCodeOptions": {
     "indentSize": 2,

@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 
-import { version } from '../package.json';
 import * as events from './events';
 import { Global, ODOStorage } from './types';
 
@@ -47,7 +46,7 @@ export const init = () : Odo => {
       emitter.removeAllListeners();
       global.document.removeEventListener('message', handleOdoMessage);
     },
-    version,
+    version: '__version__',
   };
 };
 

@@ -1,8 +1,11 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
-import typescript from '@rollup/plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
 import builtins from 'rollup-plugin-node-builtins';
+import replace from '@rollup/plugin-replace';
+
+import { version } from './package.json';
 
 // `npm run build` -> `production` is true
 // `npm run dev` -> `production` is false
@@ -16,11 +19,17 @@ export default [
 			name: 'ODO',
 			file: 'build/odo.js',
 			format: 'umd',
-			sourcemap: false
+			sourcemap: false,
 		},
 		plugins: [
+			replace({ '__version__': version }),
 			builtins(),
-			typescript(),
+			typescript({
+				tsconfig: "tsconfig.json",
+        tsconfigOverride: {
+					exclude: ['test/*.spec.ts'],
+				},
+			}),
 			resolve(), // tells Rollup how to find date-fns in node_modules
 			commonjs(), // converts date-fns to ES modules
 			production && terser(), // minify, but only in production
