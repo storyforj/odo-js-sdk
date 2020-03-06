@@ -11,8 +11,8 @@ export default [
 	{
 		input: 'src/lib.ts',
 		output: {
-			name: 'odo',
-			file: 'build/lib.js',
+			name: 'ODO',
+			file: 'build/odo.js',
 			format: 'umd',
 			sourcemap: true
 		},

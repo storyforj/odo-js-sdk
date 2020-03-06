@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as spies from 'chai-spies';
 
-import * as ODO from '../src/lib';
+import * as ODO from '../src/odo';
 
 chai.use(spies);
 const { expect } = chai;
