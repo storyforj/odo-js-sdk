@@ -19,7 +19,7 @@ describe('odo', () => {
       postMessage: chai.spy(() => {}),
     };
 
-    const odo = ODO.init(theGlobal);
+    const odo = ODO.init({ global: theGlobal });
     const callback = chai.spy(() => {});
 
     odo.events.on(ODO.Events.start, callback);
@@ -69,7 +69,7 @@ describe('odo', () => {
       },
     };
 
-    const odo = ODO.init(theGlobal);
+    const odo = ODO.init({ global: theGlobal });
     const callback = chai.spy(() => {});
 
     odo.events.on(ODO.Events.start, callback);
@@ -98,7 +98,7 @@ describe('odo', () => {
         });
       }),
     };
-    const odo = ODO.init(theGlobal);
+    const odo = ODO.init({ global: theGlobal });
     const testData = { testing: '123' };
     const result: any = await odo.data.save('testing', testData);
     expect(theGlobal.postMessage).to.have.been.called.exactly(1);
@@ -129,7 +129,7 @@ describe('odo', () => {
         });
       }),
     };
-    const odo = ODO.init(theGlobal);
+    const odo = ODO.init({ global: theGlobal });
 
     const result: any = await odo.data.get('testing');
     expect(theGlobal.postMessage).to.have.been.called.exactly(1);
@@ -157,7 +157,7 @@ describe('odo', () => {
         });
       }),
     };
-    const odo = ODO.init(theGlobal);
+    const odo = ODO.init({ global: theGlobal });
 
     let result: { success?: Boolean, key?: string } = {};
     try {
@@ -180,7 +180,7 @@ describe('odo', () => {
       postMessage: chai.spy(() => {}),
     };
 
-    const odo = ODO.init(theGlobal);
+    const odo = ODO.init({ global: theGlobal });
     const testData = { testing: '123' };
     odo.track('testing', testData);
     expect(theGlobal.postMessage).to.have.been.called.exactly(1);

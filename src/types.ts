@@ -21,3 +21,28 @@ export interface Global {
 export class ODOStorage {
   public isStarted: boolean = false;
 };
+
+export type DataOutput = {
+  isODO: boolean,
+  success: boolean,
+  event: string,
+  key: string,
+  data: object,
+}
+
+export type DataGetInput = {
+  event: string,
+  args: {
+    returnEvent: string,
+    key: string,
+  },
+};
+
+export type DataSaveInput = {
+  event: string,
+  args: {
+    returnEvent: string,
+    key: string,
+    data: object,
+  },
+};

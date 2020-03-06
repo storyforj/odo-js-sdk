@@ -1,10 +1,9 @@
-import { EventEmitter } from 'events';
-
 import * as data from './data';
 import * as events from './events';
 import * as triggers from './triggers';
 import { Global, ODOStorage } from './types';
 import { track } from './analytics';
+import Persistance from './persistance';
 
 export type Odo = {
   events: events.ODOEmitter,
@@ -26,21 +25,26 @@ export type Odo = {
 export const Events = events.Events;
 export const Triggers = triggers.Triggers;
 
-export const init = (global?: Global) : Odo => {
-  const fakeGlobalEventListener: EventEmitter = new EventEmitter();
-  let theGlobal = global || {
+export const init = (config?: { global?: Global, useLocalStorageInDev?: boolean }) : Odo => {
+  let odoStorage = new ODOStorage();
+  const emitter = new events.ODOEmitter(odoStorage);
+
+  let theGlobal = config?.global ?? {
     navigator: { userAgent: 'n/a' },
     document: {
-      addEventListener: fakeGlobalEventListener.on.bind(fakeGlobalEventListener),
-      removeEventListener: fakeGlobalEventListener.removeListener.bind(fakeGlobalEventListener),
+      addEventListener: emitter.on.bind(emitter),
+      removeEventListener: emitter.removeListener.bind(emitter),
     },
     postMessage: (message: string) => {
-      const data: { event: 'string', data: any } = JSON.parse(message);
+      const data: { event: 'string', args: object } = JSON.parse(message);
       if (data.event === triggers.Triggers.ready) {
-        emitter.emit(events.Events.start, data.data);
+        emitter.emit(events.Events.start, data.args);
       }
       if (data.event === triggers.Triggers.finish) {
-        emitter.emit(events.Events.restart, data.data);
+        emitter.emit(events.Events.restart, data.args);
+      }
+      if (data.event.indexOf(':data:') > -1 && !isInOdo && config?.useLocalStorageInDev === true) {
+        emitter.emit('message', { detail: JSON.stringify(data) });
       }
     },
   };
@@ -52,12 +56,14 @@ export const init = (global?: Global) : Odo => {
     theGlobal = window as Global;
   }
 
-  let odoStorage = new ODOStorage();
-  const emitter = new events.ODOEmitter(odoStorage);
-
   // just trigger start when not in odo
   if (!isInOdo) {
     odoStorage.isStarted = true;
+  }
+
+  let persist: Persistance;
+  if (!isInOdo && config?.useLocalStorageInDev === true) {
+    persist = new Persistance(emitter);
   }
 
   function handleOdoMessage(customEvent: CustomEvent) {
@@ -82,6 +88,9 @@ export const init = (global?: Global) : Odo => {
     destroy: () => {
       emitter.removeAllListeners();
       theGlobal.document.removeEventListener('message', handleOdoMessage);
+      if (persist) {
+        persist.destroy();
+      }
     },
     version: '__version__',
   };
