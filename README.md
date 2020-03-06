@@ -41,9 +41,7 @@ When downloading you should add the script file locally, maybe place it in a ven
 </script>
 ```
 
-## APIs
-
-### Events
+## Events
 
 The following functions are available when listening to events.
 
@@ -53,13 +51,13 @@ The following functions are available when listening to events.
   odo.events.once(event: ODO.Events, callback: (data?: object) => void): void
 ```
 
-#### Event Types
+### Event Types
 
 **ODO.Events.start**: (Required) Is executed when the player wants to start a game. The `start` event is required to be listened to.
 
 **ODO.Events.restart**: For replayable games, after the "finish" trigger is executed, the player may "restart" the game. This action would initiate a restart event. Optionally, games can implement their own "restart" behavior. This is provided as a convenience.
 
-### Triggers
+## Triggers
 
 A trigger is used to signal to ODO that the game is prepared for further player interaction. For instance, the game should fire an `ODO.Triggers.ready` trigger when all assets are loaded.
 
@@ -67,14 +65,14 @@ A trigger is used to signal to ODO that the game is prepared for further player 
   odo.trigger(event: ODO.Triggers, data?: object): void
 ```
 
-#### Trigger Types
+### Trigger Types
 
 **ODO.Triggers.ready**: (Required) Indicate to ODO that the game is loaded and ready to be played.
 **ODO.Triggers.finish**: For replayable games, you can indicate to ODO that a playthrough is complete. This will cause ODO to a show a UI that asks the player if they'd like to replay. This is provided as a convenience.
 
 **NOTE** In dev environments, triggers will automatically fire their "event" counterparts.
 
-### Data Saving/Retrieval
+## Data Saving/Retrieval
 
 Use the following methods to save/retrieve data. getForPlayer/saveForPlayer are used to store data for just this player, while get/save is for non-player specific information.
 
@@ -85,7 +83,7 @@ Use the following methods to save/retrieve data. getForPlayer/saveForPlayer are 
   odo.data.saveForPlayer(key: string, (data: object) => void): Promise<object>
 ```
 
-### Analytics
+## Analytics
 
 You may track certain player activities like "checkpoints" reached in order to get insights into how people playing your game are doing.
 
@@ -93,12 +91,9 @@ You may track certain player activities like "checkpoints" reached in order to g
   odo.track(event: string, data?: object): void
 ```
 
-### ODO Production vs Testing/Dev
+## Testing/Configuration
 
 The ODO JS SDK is designed to work within both the ODO app and in local development. When using the app, we save data via ODOs APIs. In local environments (or out on the web elsewhere), we use local storage as the persistence layer. This persistence is volatile, but allows developers to have an easy testing/development experience.
-
-
-### Testing/Configuration
 
 `ODO.init(config?: object)` takes some optional params that are mostly useful in testing scenarios.
 
@@ -109,6 +104,6 @@ config = {
 }
 ```
 
-### Getting Help
+## Getting Help
 
 If you need any help, please hop into our Discord: https://discord.gg/SDSsGBP
