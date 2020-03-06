@@ -1,11 +1,18 @@
 import { EventEmitter } from 'events';
 
+import * as data from './data';
 import * as events from './events';
 import * as triggers from './triggers';
 import { Global, ODOStorage } from './types';
 
 export type Odo = {
   events: events.ODOEmitter,
+  data: {
+    save: (key: string, data: object) => Promise<object>,
+    saveForPlayer: (key: string, data: object) => Promise<object>,
+    get: (key: string) => Promise<object>,
+    getForPlayer: (key: string) => Promise<object>,
+  },
   trigger: (trigger: string, data?: object | undefined) => void,
   /**
    * Removes all listeners and connections to the DOM.
@@ -22,8 +29,8 @@ export const init = (global?: Global) : Odo => {
   let theGlobal = global || {
     navigator: { userAgent: 'n/a' },
     document: {
-      addEventListener: fakeGlobalEventListener.on,
-      removeEventListener: fakeGlobalEventListener.off,
+      addEventListener: fakeGlobalEventListener.on.bind(fakeGlobalEventListener),
+      removeEventListener: fakeGlobalEventListener.off.bind(fakeGlobalEventListener),
     },
     postMessage: (message: { event: 'string', data: any }) => {
       if (message.event === triggers.Triggers.ready) {
@@ -55,6 +62,12 @@ export const init = (global?: Global) : Odo => {
   return {
     events: emitter,
     trigger: triggers.dispatch(theGlobal),
+    data: {
+      save: data.save(theGlobal, 'save'),
+      saveForPlayer: data.save(theGlobal, 'saveForPlayer'),
+      get: data.get(theGlobal, 'get'),
+      getForPlayer: data.get(theGlobal, 'getForPlayer'),
+    },
     destroy: () => {
       emitter.removeAllListeners();
       theGlobal.document.removeEventListener('message', handleOdoMessage);

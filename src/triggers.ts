@@ -5,9 +5,9 @@ export const Triggers = {
   finish: 'odo:trigger:finish',
 };
 
-export const dispatch = (global: Global) => (trigger: string, data?: object) => {
+export const dispatch = (global: Global) => (trigger: string, args?: object) => {
   global.postMessage({
     event: trigger,
-    data,
+    args,
   }, '*');
 };
