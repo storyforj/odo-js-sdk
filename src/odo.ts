@@ -4,6 +4,7 @@ import * as data from './data';
 import * as events from './events';
 import * as triggers from './triggers';
 import { Global, ODOStorage } from './types';
+import { track } from './analytics';
 
 export type Odo = {
   events: events.ODOEmitter,
@@ -13,6 +14,7 @@ export type Odo = {
     get: (key: string) => Promise<object>,
     getForPlayer: (key: string) => Promise<object>,
   },
+  track: (key: string, data?: object | undefined) => void,
   trigger: (trigger: string, data?: object | undefined) => void,
   /**
    * Removes all listeners and connections to the DOM.
@@ -68,6 +70,7 @@ export const init = (global?: Global) : Odo => {
       get: data.get(theGlobal, 'get'),
       getForPlayer: data.get(theGlobal, 'getForPlayer'),
     },
+    track: track(theGlobal),
     destroy: () => {
       emitter.removeAllListeners();
       theGlobal.document.removeEventListener('message', handleOdoMessage);

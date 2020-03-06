@@ -131,4 +131,21 @@ describe('odo', () => {
     expect(theGlobal.postMessage).to.have.been.called.exactly(1);
     expect(result.key).to.be.equal('testing');
   });
+
+  it('executes an analytics tracking event', async function() {
+    const fakeGlobalEventListener: EventEmitter = new EventEmitter();
+    const theGlobal = {
+      navigator: { userAgent: 'n/a' },
+      document: {
+        addEventListener: fakeGlobalEventListener.on.bind(fakeGlobalEventListener),
+        removeEventListener: fakeGlobalEventListener.off.bind(fakeGlobalEventListener),
+      },
+      postMessage: chai.spy(() => {}),
+    };
+
+    const odo = ODO.init(theGlobal);
+    const testData = { testing: '123' };
+    odo.track('testing', testData);
+    expect(theGlobal.postMessage).to.have.been.called.exactly(1);
+  });
 });
