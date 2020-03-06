@@ -23,6 +23,11 @@ export class ODOEmitter extends EventEmitter {
     return this;
   }
 
+  off(event: string | symbol, listener: (...args: any[]) => void): this {
+    EventEmitter.prototype.removeListener.call(this, event.toString(), listener);
+    return this;
+  }
+
   emit(event: string | symbol, ...args: any[]): boolean {
     const result = EventEmitter.prototype.emit.call(this, event.toString(), ...args);
     if (event === Events.start) {

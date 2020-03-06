@@ -8,8 +8,8 @@ function getRandomInt(max : number = 10000000000): number {
 export const save = (global: Global, saveType: string) => (key: string, data: object) : Promise<object> => {
   return new Promise((resolve, reject) => {
     const returnEvent = `odo:data:saveResponse:${getRandomInt()}`;
-    const handleResponse = (dataString: string) => {
-      const data: any = JSON.parse(dataString);
+    const handleResponse = (customEvent: CustomEvent) => {
+      const data: any = JSON.parse(customEvent.detail);
       if (data.event !== returnEvent) { return; }
       if (data.success) {
         resolve(data);
@@ -29,8 +29,8 @@ export const save = (global: Global, saveType: string) => (key: string, data: ob
 export const get = (global: Global, getType: string) => (key: string) : Promise<object> => {
   return new Promise((resolve, reject) => {
     const returnEvent = `odo:data:getResponse:${getRandomInt()}`;
-    const handleResponse = (dataString: string) => {
-      const data: any = JSON.parse(dataString);
+    const handleResponse = (customEvent: CustomEvent) => {
+      const data: any = JSON.parse(customEvent.detail);
       if (data.event !== returnEvent) { return; }
       if (data.success) {
         resolve(data);

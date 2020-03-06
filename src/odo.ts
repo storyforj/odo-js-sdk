@@ -32,19 +32,22 @@ export const init = (global?: Global) : Odo => {
     navigator: { userAgent: 'n/a' },
     document: {
       addEventListener: fakeGlobalEventListener.on.bind(fakeGlobalEventListener),
-      removeEventListener: fakeGlobalEventListener.off.bind(fakeGlobalEventListener),
+      removeEventListener: fakeGlobalEventListener.removeListener.bind(fakeGlobalEventListener),
     },
-    postMessage: (message: { event: 'string', data: any }) => {
-      if (message.event === triggers.Triggers.ready) {
-        emitter.emit(events.Events.start, message.data);
+    postMessage: (message: string) => {
+      const data: { event: 'string', data: any } = JSON.parse(message);
+      if (data.event === triggers.Triggers.ready) {
+        emitter.emit(events.Events.start, data.data);
       }
-      if (message.event === triggers.Triggers.finish) {
-        emitter.emit(events.Events.restart, message.data);
+      if (data.event === triggers.Triggers.finish) {
+        emitter.emit(events.Events.restart, data.data);
       }
     },
   };
 
-  const isInOdo = theGlobal.navigator.userAgent.indexOf('odo') > -1;
+  // accounting for unit tests
+  const isInOdo = typeof window === 'undefined' ? theGlobal.navigator.userAgent.indexOf('odo') > -1 : window.navigator.userAgent.indexOf('odo') > -1
+
   if (typeof window !== 'undefined' && isInOdo) {
     theGlobal = window as Global;
   }
@@ -52,8 +55,13 @@ export const init = (global?: Global) : Odo => {
   let odoStorage = new ODOStorage();
   const emitter = new events.ODOEmitter(odoStorage);
 
-  function handleOdoMessage(dataString: string) {
-    const data = JSON.parse(dataString);
+  // just trigger start when not in odo
+  if (!isInOdo) {
+    odoStorage.isStarted = true;
+  }
+
+  function handleOdoMessage(customEvent: CustomEvent) {
+    const data = JSON.parse(customEvent.detail);
     if ((data.isODO ?? false) && typeof data.event === 'string') {
       emitter.emit(data.event, data.args);
     }

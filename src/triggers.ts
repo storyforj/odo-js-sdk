@@ -6,8 +6,9 @@ export const Triggers = {
 };
 
 export const dispatch = (global: Global) => (trigger: string, args?: object) => {
-  global.postMessage({
+  const postMessage = global.ReactNativeWebView?.postMessage || global.postMessage;
+  postMessage(JSON.stringify({
     event: trigger,
     args,
-  }, '*');
+  }), '*');
 };

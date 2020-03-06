@@ -9,7 +9,17 @@ const { expect } = chai;
 
 describe('odo', () => {
   it('registers and degregisters event listeners', async function() {
-    const odo = ODO.init();
+    const fakeGlobalEventListener: EventEmitter = new EventEmitter();
+    const theGlobal = {
+      navigator: { userAgent: 'odo' },
+      document: {
+        addEventListener: fakeGlobalEventListener.on.bind(fakeGlobalEventListener),
+        removeEventListener: fakeGlobalEventListener.off.bind(fakeGlobalEventListener),
+      },
+      postMessage: chai.spy(() => {}),
+    };
+
+    const odo = ODO.init(theGlobal);
     const callback = chai.spy(() => {});
 
     odo.events.on(ODO.Events.start, callback);
@@ -41,7 +51,25 @@ describe('odo', () => {
   });
 
   it('fires the start event after the "ready" trigger fires', async function() {
-    const odo = ODO.init();
+    const fakeGlobalEventListener: EventEmitter = new EventEmitter();
+    const theGlobal = {
+      navigator: { userAgent: 'odo' },
+      document: {
+        addEventListener: fakeGlobalEventListener.on.bind(fakeGlobalEventListener),
+        removeEventListener: fakeGlobalEventListener.off.bind(fakeGlobalEventListener),
+      },
+      postMessage: (message: string) => {
+        const data: { event: 'string', data: any } = JSON.parse(message);
+        if (data.event === ODO.Triggers.ready) {
+          odo.events.emit(ODO.Events.start, data.data);
+        }
+        if (data.event === ODO.Triggers.finish) {
+          odo.events.emit(ODO.Events.restart, data.data);
+        }
+      },
+    };
+
+    const odo = ODO.init(theGlobal);
     const callback = chai.spy(() => {});
 
     odo.events.on(ODO.Events.start, callback);
@@ -57,14 +85,17 @@ describe('odo', () => {
         addEventListener: fakeGlobalEventListener.on.bind(fakeGlobalEventListener),
         removeEventListener: fakeGlobalEventListener.off.bind(fakeGlobalEventListener),
       },
-      postMessage: chai.spy((message: { event: 'string', args: { returnEvent: string, key: string, data: object } }) => {
-        fakeGlobalEventListener.emit('message', JSON.stringify({
-          isODO: true,
-          success: true,
-          event: message.args.returnEvent,
-          key: message.args.key,
-          data: message.args.data,
-        }));
+      postMessage: chai.spy((message: string) => {
+        const data: { event: 'string', args: { returnEvent: string, key: string, data: object } } = JSON.parse(message);
+        fakeGlobalEventListener.emit('message', {
+          detail: JSON.stringify({
+            isODO: true,
+            success: true,
+            event: data.args.returnEvent,
+            key: data.args.key,
+            data: data.args.data,
+          }),
+        });
       }),
     };
     const odo = ODO.init(theGlobal);
@@ -85,14 +116,17 @@ describe('odo', () => {
         addEventListener: fakeGlobalEventListener.on.bind(fakeGlobalEventListener),
         removeEventListener: fakeGlobalEventListener.off.bind(fakeGlobalEventListener),
       },
-      postMessage: chai.spy((message: { event: 'string', args: { returnEvent: string, key: string, data: object } }) => {
-        fakeGlobalEventListener.emit('message', JSON.stringify({
-          isODO: true,
-          success: true,
-          event: message.args.returnEvent,
-          key: message.args.key,
-          data: testData,
-        }));
+      postMessage: chai.spy((message: string) => {
+        const data: { event: 'string', args: { returnEvent: string, key: string, data: object } } = JSON.parse(message);
+        fakeGlobalEventListener.emit('message', {
+          detail: JSON.stringify({
+            isODO: true,
+            success: true,
+            event: data.args.returnEvent,
+            key: data.args.key,
+            data: testData,
+          }),
+        });
       }),
     };
     const odo = ODO.init(theGlobal);
@@ -111,13 +145,16 @@ describe('odo', () => {
         addEventListener: fakeGlobalEventListener.on.bind(fakeGlobalEventListener),
         removeEventListener: fakeGlobalEventListener.off.bind(fakeGlobalEventListener),
       },
-      postMessage: chai.spy((message: { event: 'string', args: { returnEvent: string, key: string, data: object } }) => {
-        fakeGlobalEventListener.emit('message', JSON.stringify({
-          isODO: true,
-          success: false,
-          event: message.args.returnEvent,
-          key: message.args.key,
-        }));
+      postMessage: chai.spy((message: string) => {
+        const data: { event: 'string', args: { returnEvent: string, key: string, data: object } } = JSON.parse(message);
+        fakeGlobalEventListener.emit('message', {
+          detail: JSON.stringify({
+            isODO: true,
+            success: false,
+            event: data.args.returnEvent,
+            key: data.args.key,
+          }),
+        });
       }),
     };
     const odo = ODO.init(theGlobal);

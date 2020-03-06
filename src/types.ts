@@ -3,7 +3,7 @@ export interface ICallback {
 }
 
 export interface IListenerCallback {
-	(data: string) : void;
+	(event: CustomEvent) : void;
 }
 
 export interface Global {
@@ -12,7 +12,10 @@ export interface Global {
     removeEventListener: (event: string, callback: IListenerCallback) => void,
   };
   navigator: { userAgent: string },
-  postMessage: ((message: any, targetOrigin: string, transfer?: Transferable[] | undefined) => void) & ((message: any, targetOrigin: string, transfer?: Transferable[] | undefined) => void)
+  postMessage: ((message: string, targetOrigin: string, transfer?: Transferable[] | undefined) => void) & ((message: any, targetOrigin: string, transfer?: Transferable[] | undefined) => void)
+  ReactNativeWebView?: {
+    postMessage: ((message: string, targetOrigin: string, transfer?: Transferable[] | undefined) => void) & ((message: any, targetOrigin: string, transfer?: Transferable[] | undefined) => void),
+  }
 }
 
 export class ODOStorage {
