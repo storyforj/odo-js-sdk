@@ -1,6 +1,6 @@
 {
   "name": "@odogames/js-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./build/odo.js",
   "types": "./build/odo.d.ts",
   "repository": "https://github.com/storyforj/odo-js-sdk",
