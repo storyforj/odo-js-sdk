@@ -12,6 +12,7 @@ export interface Global {
     removeEventListener: (event: string, callback: IListenerCallback) => void,
   };
   navigator: { userAgent: string },
+  postMessage: ((message: any, targetOrigin: string, transfer?: Transferable[] | undefined) => void) & ((message: any, targetOrigin: string, transfer?: Transferable[] | undefined) => void)
 }
 
 export class ODOStorage {

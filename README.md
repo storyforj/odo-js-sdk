@@ -72,11 +72,12 @@ We have 2 events currently. An event is the way ODO signals to the game that som
 
 ### Triggers
 
-We have 2 triggers currently. A trigger is used for the game to signal to ODO that it is ready to do something. When the game is fullly loaded for instance
+We have 2 triggers currently. A trigger is used for the game to signal to ODO that it is ready to do something, such as when the game is fully loaded for instance, and you'd like to indicate that to ODO.
 
 **IMPORTANT** the `ready` event is required to be triggered.
+**IMPORTANT** in dev environments, triggers will automatically fire their "event" counter parts.
 
-- ODO.Triggers.ready: Indicate to ODO that the game is loaded and ready to be played
+- ODO.Triggers.ready: Indicate to ODO that the game is loaded and ready to be played.
 - ODO.Triggers.finish: For replayable games, you can indicate to ODO that a play through of a game is complete. This will cause ODO to a show a UI to the player that asks them if they'd like to replay. This is provided as a convenience.
 
 ### ODO Production vs Testing/Dev

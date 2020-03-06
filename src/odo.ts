@@ -1,10 +1,12 @@
 import { EventEmitter } from 'events';
 
 import * as events from './events';
+import * as triggers from './triggers';
 import { Global, ODOStorage } from './types';
 
 export type Odo = {
   events: events.ODOEmitter,
+  trigger: (trigger: string, data?: object | undefined) => void,
   /**
    * Removes all listeners and connections to the DOM.
    */
@@ -13,19 +15,29 @@ export type Odo = {
 }
 
 export const Events = events.Events;
+export const Triggers = triggers.Triggers;
 
-export const init = () : Odo => {
+export const init = (global?: Global) : Odo => {
   const fakeGlobalEventListener: EventEmitter = new EventEmitter();
-  let global: Global = {
+  let theGlobal = global || {
     navigator: { userAgent: 'n/a' },
     document: {
       addEventListener: fakeGlobalEventListener.on,
       removeEventListener: fakeGlobalEventListener.off,
     },
+    postMessage: (message: { event: 'string', data: any }) => {
+      if (message.event === triggers.Triggers.ready) {
+        emitter.emit(events.Events.start, message.data);
+      }
+      if (message.event === triggers.Triggers.finish) {
+        emitter.emit(events.Events.restart, message.data);
+      }
+    },
   };
-  const isInOdo = global.navigator.userAgent.indexOf('odo') > -1;
+
+  const isInOdo = theGlobal.navigator.userAgent.indexOf('odo') > -1;
   if (typeof window !== 'undefined' && isInOdo) {
-    global = window as Global;
+    theGlobal = window as Global;
   }
 
   let odoStorage = new ODOStorage();
@@ -38,13 +50,14 @@ export const init = () : Odo => {
     }
   }
 
-  global.document.addEventListener('message', handleOdoMessage);
+  theGlobal.document.addEventListener('message', handleOdoMessage);
 
   return {
     events: emitter,
+    trigger: triggers.dispatch(theGlobal),
     destroy: () => {
       emitter.removeAllListeners();
-      global.document.removeEventListener('message', handleOdoMessage);
+      theGlobal.document.removeEventListener('message', handleOdoMessage);
     },
     version: '__version__',
   };

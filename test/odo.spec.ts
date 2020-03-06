@@ -30,12 +30,21 @@ describe('odo', () => {
     expect(callback).to.have.been.called.exactly(1);
   });
 
-  it('the start event fires even if the listener is added out of sequence', async function() {
+  it('fires the start event even if the listener is added out of sequence', async function() {
     const odo = ODO.init();
     const callback = chai.spy(() => {});
 
     odo.events.emit(ODO.Events.start);
     odo.events.on(ODO.Events.start, callback);
+    expect(callback).to.have.been.called.exactly(1);
+  });
+
+  it('fires the start event after the "ready" trigger fires', async function() {
+    const odo = ODO.init();
+    const callback = chai.spy(() => {});
+
+    odo.events.on(ODO.Events.start, callback);
+    odo.trigger(ODO.Triggers.ready);
     expect(callback).to.have.been.called.exactly(1);
   });
 });
