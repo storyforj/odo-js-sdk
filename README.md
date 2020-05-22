@@ -28,7 +28,7 @@ When using npm you should import ODO as follows:
 import ODO from '@odogames/js-sdk';
 
 const odo = ODO.init({ useLocalStorageInDev: true });
-odo.on(ODO.Events.start, () => {});
+odo.events.on(ODO.Events.start, () => {});
 ```
 
 When downloading you should add the script file locally, maybe place it in a vendor file and access the "ODO" variable globally.
@@ -37,7 +37,7 @@ When downloading you should add the script file locally, maybe place it in a ven
 <script src="vendor/odo.js">
 <script>
   const odo = ODO.init({ useLocalStorageInDev: true });
-  odo.on(ODO.Events.start, () => {});
+  odo.events.on(ODO.Events.start, () => {});
 </script>
 ```
 
